@@ -1,6 +1,6 @@
 
 # EX 5C Graph coloring
-## DATE:
+## DATE: 11-11-2025
 ## AIM:
 To write a Java program to for given constraints.
 Problem Description:
@@ -26,23 +26,111 @@ Otherwise, print "NO".
 
 
 ## Algorithm
-1. 
-2. 
-3. 
-4.  
-5.   
+1. Start  
+2. Read the input values:  
+   - `n` → number of radio towers (nodes in the graph).  
+   - `m` → number of available channels (colors).  
+   - `e` → number of connections (edges) between towers.  
+3. Create an adjacency list `graph` of size `n` to represent the connections between towers.  
+4. For each of the `e` edges, read two integers `u` and `v` and add the connection to both towers (since the graph is undirected):  
+   - `graph[u].add(v)`  
+   - `graph[v].add(u)`  
+5. Initialize an array `color[n]` to store the assigned channel for each tower (0 indicates unassigned).  
+6. Define a helper function `isSafe(node, graph, color, col)` that checks if assigning color `col` to tower `node` is valid:  
+   - Iterate over all neighbors of `node`.  
+   - If any neighbor already has the same color `col`, return `false`.  
+   - Otherwise, return `true`.  
+7. Define the recursive function `isColorable(graph, color, node, m, n)` to assign colors to towers:  
+   - **Base case:** If all towers are assigned a color (`node == n`), return `true`.  
+   - For the current tower, try assigning each color from `1` to `m`:  
+     - If the color is safe (`isSafe` returns `true`), assign it and recursively call `isColorable` for the next tower.  
+     - If recursion returns `true`, a valid coloring exists — return `true`.  
+     - Otherwise, backtrack by resetting `color[node] = 0`.  
+   - If no color can be assigned to the current tower, return `false`.  
+8. In the main function:  
+   - Call `isColorable(graph, color, 0, m, n)`.  
+   - If it returns `true`, print `"YES"` (a valid channel assignment exists).  
+   - Otherwise, print `"NO"`.  
+9. End  
+
 
 ## Program:
 ```
 /*
-Program to implement Reverse a String
-Developed by: 
-Register Number:  
+Developed by: YUVARAJ B
+Register Number:  212222040186 
 */
+
+
+import java.util.*;
+public class RadioTowerChannelAssignment {
+
+    // Helper function to check if a color can be assigned to a node
+    private static boolean isSafe(int node, List<List<Integer>> graph, int[] color, int col) {
+        for (int neighbor : graph.get(node)) {
+            if (color[neighbor] == col)  // adjacent tower already uses this color
+                return false;
+        }
+        return true;
+    }
+
+    // Recursive function to try assigning colors to each tower
+    public static boolean isColorable(List<List<Integer>> graph, int[] color, int node, int m, int n) {
+        // Base case: all towers are colored successfully
+        if (node == n)
+            return true;
+
+        // Try all colors (1 to m)
+        for (int col = 1; col <= m; col++) {
+            if (isSafe(node, graph, color, col)) {
+                color[node] = col; // assign color
+
+                // Recur for next tower
+                if (isColorable(graph, color, node + 1, m, n))
+                    return true;
+
+                // Backtrack
+                color[node] = 0;
+            }
+        }
+
+        // If no color can be assigned, return false
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt(); // number of towers
+        int m = sc.nextInt(); // number of available channels
+        int e = sc.nextInt(); // number of edges (connections)
+
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++)
+            graph.add(new ArrayList<>());
+
+        for (int i = 0; i < e; i++) {
+            int u = sc.nextInt();
+            int v = sc.nextInt();
+            graph.get(u).add(v);
+            graph.get(v).add(u); // undirected graph
+        }
+
+        int[] color = new int[n]; // color assignment for towers
+
+        if (isColorable(graph, color, 0, m, n))
+            System.out.println("YES");
+        else
+            System.out.println("NO");
+
+        sc.close();
+    }
+}
+
 ```
 
 ## Output:
 
+<img width="776" height="620" alt="image" src="https://github.com/user-attachments/assets/5a0785e8-34aa-4cd1-9b13-0c4beda66a99" />
 
 
 ## Result:
